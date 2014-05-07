@@ -10,7 +10,7 @@ namespace PrintDiamond1
     {
         static void Main()
         {
-			var printDiamondList = PrintDiamond('G');
+			var printDiamondList = PrintDiamond('S');
 			foreach (var line in printDiamondList)
 			{
 				Console.WriteLine(line);
@@ -18,56 +18,62 @@ namespace PrintDiamond1
 			Console.ReadLine();
         }
 
-        [Test]
-        public void PrintDiamondShouldReturnAWhenA()
-        {
-            PrintDiamond('A').Should().BeEquivalentTo(new List<string>{"A"});
-        }
+		[Test]
+		public void PrintDiamondShouldReturnAWhenA()
+		{
+			PrintDiamond('A').Should().BeEquivalentTo(new List<string> {"A"});
+		}
 
 		[Test]
-		public void PrintDiamondShouldReturnABWhenA()
+		public void PrintDiamondShouldReturnABWhenB()
 		{
-			PrintDiamond('B').Should().BeEquivalentTo(new List<string> { " A","B B"," A" });
+			PrintDiamond('B').Should().BeEquivalentTo(new List<string> { " A ", "B B", " A " });
 		}
 
 		[Test]
 		public void PrintDiamondShouldReturnABCWhenC()
 		{
-			PrintDiamond('C').Should().BeEquivalentTo(new List<string> { "  A", " B B", "C   C", " B B", "  A" });
+			PrintDiamond('C').Should().BeEquivalentTo(new List<string> { "  A  ", " B B ", "C   C", " B B ", "  A  " });
 		}
 
 		[Test]
-		public void PrintDiamondShouldReturnABCDWhenD()
+		public void PrintDiamondShouldReturnABCDEAWhenE()
 		{
-			PrintDiamond('D').Should().BeEquivalentTo(new List<string> { "   A", "  B B", " C   C", "D     D", " C   C", "  B B", "   A" });
-		}
-
-		[Test]
-		public void PrintDiamondShouldReturnABCDEWhenE()
-		{
-			PrintDiamond('E').Should().BeEquivalentTo(new List<string> { "    A", "   B B", "  C   C", " D     D", "E       E", " D     D", "  C   C", "   B B", "    A" });
+			PrintDiamond('E').Should().BeEquivalentTo(new List<string> { "    A    ", "   B B   ", "  C   C  ", " D     D ", "E       E", " D     D ", "  C   C  ", "   B B   ", "    A    " });
 		}
 
 	    private static List<string> PrintDiamond(char character)
 	    {
-		    var primaryList = new List<string>();
-		    var buildList = new List<string>();
-		    
-			 primaryList.Add(string.Format("{0}{1}",new string(' ',character-'A'), "A"));
-		    if (character>'A')
+		    var stringDiamond = new List<string>();
+		    var stringDiamondJoind = new List<string>();
+
+		    Char seedChar = 'A';
+		    while (seedChar <= character)
 		    {
-			    char seedChar = 'B';
-				while (seedChar <= character)
-				{
-					primaryList.Add(string.Format("{2}{0}{1}{0}", seedChar, new string(' ', ((seedChar - 'A') * 2 - 1)), new string(' ', character-seedChar)));
-					seedChar++;
-				}
-				buildList.AddRange(primaryList);
-				primaryList.Reverse();
-			    buildList.AddRange(primaryList.GetRange(1,primaryList.Count-1));
-			    return buildList;
+				string line = string.Format("{0}{1}{2}", new string(' ', character - seedChar), seedChar, new string(' ', seedChar-'A'));
+			    line += GetVerticaleSymmetric(line);
+			    stringDiamond.Add(line);
+			    seedChar++;
 		    }
-		    return primaryList;
+			if (character != 'A')
+			{
+				stringDiamondJoind.AddRange(stringDiamond);
+				stringDiamond.Reverse();
+				stringDiamondJoind.AddRange(stringDiamond.GetRange(1,stringDiamond.Count-1));
+			}
+			else
+			{
+				stringDiamondJoind.AddRange(stringDiamond);
+			}
+
+			return stringDiamondJoind;
 	    }
+
+		private static string GetVerticaleSymmetric(string firstHalf)
+		{
+			var charArray = firstHalf.ToCharArray();
+			Array.Reverse(charArray);
+			return (new string(charArray)).Substring(1);
+		}
     }
 }
