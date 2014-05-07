@@ -10,12 +10,12 @@ namespace PrintDiamond1
     {
         static void Main()
         {
-            var printDiamondList = PrintDiamond('S');
-            foreach (var line in printDiamondList)
-            {
-                Console.WriteLine(line);
-            }
-            Console.ReadLine();
+			var printDiamondList = PrintDiamond('G');
+			foreach (var line in printDiamondList)
+			{
+				Console.WriteLine(line);
+			}
+			Console.ReadLine();
         }
 
         [Test]
@@ -24,57 +24,50 @@ namespace PrintDiamond1
             PrintDiamond('A').Should().BeEquivalentTo(new List<string>{"A"});
         }
 
-        [Test]
-        public void PrintDiamondShouldReturnABAWhenB()
-        {
-            PrintDiamond('B').Should().BeEquivalentTo(new List<string> { " A","B B"," A" });
-        }
+		[Test]
+		public void PrintDiamondShouldReturnABWhenA()
+		{
+			PrintDiamond('B').Should().BeEquivalentTo(new List<string> { " A","B B"," A" });
+		}
 
-        [Test]
-        public void PrintDiamondShouldReturnABCAWhenC()
-        {
-            PrintDiamond('C').Should().BeEquivalentTo(new List<string> { "  A", " B B", "C   C", " B B", "  A" });
-        }
+		[Test]
+		public void PrintDiamondShouldReturnABCWhenC()
+		{
+			PrintDiamond('C').Should().BeEquivalentTo(new List<string> { "  A", " B B", "C   C", " B B", "  A" });
+		}
 
-        [Test]
-        public void PrintDiamondShouldReturnABCDAWhenD()
-        {
-            PrintDiamond('D').Should().BeEquivalentTo(new List<string> { "   A", "  B B", " C   C", "D     D", " C   C", "  B B", "   A" });
-        }
+		[Test]
+		public void PrintDiamondShouldReturnABCDWhenD()
+		{
+			PrintDiamond('D').Should().BeEquivalentTo(new List<string> { "   A", "  B B", " C   C", "D     D", " C   C", "  B B", "   A" });
+		}
 
-        [Test]
-        public void PrintDiamondShouldReturnABCDEAWhenE()
-        {
-            PrintDiamond('E').Should().BeEquivalentTo(new List<string> { "    A", "   B B", "  C   C", " D     D", "E       E", " D     D", "  C   C", "   B B", "    A" });
-        }
+		[Test]
+		public void PrintDiamondShouldReturnABCDEWhenE()
+		{
+			PrintDiamond('E').Should().BeEquivalentTo(new List<string> { "    A", "   B B", "  C   C", " D     D", "E       E", " D     D", "  C   C", "   B B", "    A" });
+		}
 
-        private static List<string> PrintDiamond(char charcter)
-        {
-            var diamondArray = new List<string>();
-            char seedChar='A';
-            bool isReverse = false;
-            int prefixSpacers = charcter - 'A';
-            while (seedChar <= charcter && seedChar >= 'A')
-            {
-                if (seedChar=='A')
-                    diamondArray.Add(string.Format("{0}{1}",new string(' ',prefixSpacers),seedChar));
-                else
-                    diamondArray.Add(GetString(charcter, seedChar));
-
-                if (seedChar == charcter)
-                    isReverse = true;
-
-                if (isReverse)
-                    seedChar--;
-                else
-                    seedChar++;
-            }
-            return diamondArray;
-        }
-
-        private static string GetString(char charcter, char seedChar)
-        {
-            return string.Format("{0}{1}{2}{1}", new string(' ', charcter-seedChar), seedChar, new string(' ', ((seedChar - 'A')*2)-1));
-        }
+	    private static List<string> PrintDiamond(char character)
+	    {
+		    var primaryList = new List<string>();
+		    var buildList = new List<string>();
+		    
+			 primaryList.Add(string.Format("{0}{1}",new string(' ',character-'A'), "A"));
+		    if (character>'A')
+		    {
+			    char seedChar = 'B';
+				while (seedChar <= character)
+				{
+					primaryList.Add(string.Format("{2}{0}{1}{0}", seedChar, new string(' ', ((seedChar - 'A') * 2 - 1)), new string(' ', character-seedChar)));
+					seedChar++;
+				}
+				buildList.AddRange(primaryList);
+				primaryList.Reverse();
+			    buildList.AddRange(primaryList.GetRange(1,primaryList.Count-1));
+			    return buildList;
+		    }
+		    return primaryList;
+	    }
     }
 }
